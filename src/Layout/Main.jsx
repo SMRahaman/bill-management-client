@@ -20,14 +20,15 @@ const Main = () => {
         <Header userRole={specifiqUserForRole}></Header>
       </div>
       <div className="flex flex-row relative">
-        {location.pathname !== "/" && location.pathname !== "/register" && (
-          <div className="w-[20%] overflow-auto">
-            <SideMenubar userRole={specifiqUserForRole}></SideMenubar>
-          </div>
-        )}
+        {location.pathname !== "/login" &&
+          location.pathname !== "/register" && (
+            <div className="w-[20%] overflow-auto">
+              <SideMenubar userRole={specifiqUserForRole}></SideMenubar>
+            </div>
+          )}
         <div
           className={
-            location.pathname !== "/" && location.pathname !== "/register"
+            location.pathname !== "/login" && location.pathname !== "/register"
               ? "w-[80%] absolute left-[260px] pe-5"
               : "w-full "
           }

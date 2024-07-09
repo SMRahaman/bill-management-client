@@ -16,7 +16,7 @@ const SideMenubar = ({ userRole }) => {
           <ul className="mt-6 space-y-1">
             <li>
               <Link
-                to="/dashboard"
+                to="/"
                 className="block rounded-lg hover:bg-gray-100 px-4 py-2 text-sm font-medium text-gray-500"
               >
                 Home
