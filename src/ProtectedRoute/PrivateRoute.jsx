@@ -4,7 +4,7 @@ import userUserHook from "../Hook/UserHook/userUserHook";
 import { BallTriangle } from "react-loader-spinner";
 import { Navigate } from "react-router-dom";
 
-const PrivateRoute = ({ children}) => {
+const PrivateRoute = ({ children }) => {
   const { user, loader } = useContext(AuthContext);
   if (loader) {
     return (
@@ -20,15 +20,15 @@ const PrivateRoute = ({ children}) => {
       />
     );
   }
-   if(user){
+  if (user) {
     return children;
-   }
+  }
 
-   return(
+  return (
     <div>
-        <Navigate to='/login'></Navigate>
+      <Navigate to="/"></Navigate>
     </div>
-   )
+  );
 };
 
 export default PrivateRoute;

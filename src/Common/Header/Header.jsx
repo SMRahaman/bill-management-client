@@ -7,7 +7,7 @@ const Header = ({ userRole }) => {
   const navigate = useNavigate();
   const logoutHandler = () => {
     logout()
-      .then(navigate("/login"))
+      .then(navigate("/"))
       .catch((error) => console.log(error));
   };
   return (

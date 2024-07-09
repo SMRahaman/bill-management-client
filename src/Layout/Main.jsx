@@ -16,19 +16,20 @@ const Main = () => {
   console.log(specifiqUserForRole);
   return (
     <div className="z-10">
-      <div className="z-[10] fixed w-full">
-        <Header userRole={specifiqUserForRole}></Header>
-      </div>
+      {location.pathname !== "/" && (
+        <div className="z-[10] fixed w-full">
+          <Header userRole={specifiqUserForRole}></Header>
+        </div>
+      )}
       <div className="flex flex-row relative">
-        {location.pathname !== "/login" &&
-          location.pathname !== "/register" && (
-            <div className="w-[20%] overflow-auto">
-              <SideMenubar userRole={specifiqUserForRole}></SideMenubar>
-            </div>
-          )}
+        {location.pathname !== "/" && (
+          <div className="w-[20%] overflow-auto">
+            <SideMenubar userRole={specifiqUserForRole}></SideMenubar>
+          </div>
+        )}
         <div
           className={
-            location.pathname !== "/login" && location.pathname !== "/register"
+            location.pathname !== "/"
               ? "w-[80%] absolute left-[260px] pe-5"
               : "w-full "
           }
