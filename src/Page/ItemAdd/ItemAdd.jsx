@@ -6,8 +6,11 @@ import Swal from "sweetalert2";
 import useItemHook from "../../Hook/ItemHook/useItemHook";
 import ItemUpdateModal from "../../Components/ItemUpdateModal/ItemUpdateModal";
 import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
+
 const ItemAdd = () => {
-  const{user}=useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const [updateItem, setUpadateItem] = useState();
   const [selectMode, setselectMode] = useState("");
   const [selectItemType, setselectItemType] = useState("");
@@ -23,9 +26,11 @@ const ItemAdd = () => {
       itemName: itemName,
       itemType: itemType,
       itemMode: itemMode,
-      userEmail:user?.email,
+      userEmail: user?.email,
     };
-    const existingItem = itemData.find((item) => item.itemName.toLowerCase() === itemName.toLowerCase());
+    const existingItem = itemData.find(
+      (item) => item.itemName.toLowerCase() === itemName.toLowerCase()
+    );
     if (existingItem) {
       Swal.fire({
         title: "Wrong",
@@ -33,7 +38,7 @@ const ItemAdd = () => {
         icon: "error",
       });
     } else {
-      axios.post("https://bill-deposite-server.vercel.app/api/item", item).then((res) => {
+      axiosPublic.post("api/item", item).then((res) => {
         if (res.data.insertedId) {
           Swal.fire({
             title: "Congratulation",
@@ -59,7 +64,7 @@ const ItemAdd = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://bill-deposite-server.vercel.app/api/item/${id}`).then((res) => {
+        axiosPublic.delete(`api/item/${id}`).then((res) => {
           if (res.data.deletedCount == 1) {
             Swal.fire({
               title: "Congratulation",
@@ -85,48 +90,48 @@ const ItemAdd = () => {
           <h3 className="text-2xl font-bold mb-8">Add Item</h3>
         </div>
         <div className="grid grid-cols-3 place-content-center gap-2">
-        <div>
-          <input
-            required
-            type="text"
-            name="itemName"
-            placeholder="Type Item Name"
-            className="input input-bordered w-full max-w-sm"
-          />
-        </div>
-        <div className="">
-          <select
-            required
-            onChange={(e) => setselectItemType(e.target.value)}
-            className="select select-bordered w-full max-w-sm"
-          >
-            <option disabled selected>
-              Select Item Type
-            </option>
-            <option>Consimable Goods</option>
-            <option>Stationay Items</option>
-            <option>Current Asset</option>
-            <option>Fixed Asset</option>
-            <option>Electrical Items</option>
-            <option>Electronics Items</option>
-            <option>Machineries Items</option>
-            <option>Meterail Items</option>
-            <option>Others</option>
-          </select>
-        </div>
-        <div>
-          <select
-            required
-            onChange={(e) => setselectMode(e.target.value)}
-            className="select select-bordered w-full max-w-sm"
-          >
-            <option disabled selected>
-              Select Mode
-            </option>
-            <option>Active</option>
-            <option>Inactive</option>
-          </select>
-        </div>
+          <div>
+            <input
+              required
+              type="text"
+              name="itemName"
+              placeholder="Type Item Name"
+              className="input input-bordered w-full max-w-sm"
+            />
+          </div>
+          <div className="">
+            <select
+              required
+              onChange={(e) => setselectItemType(e.target.value)}
+              className="select select-bordered w-full max-w-sm"
+            >
+              <option disabled selected>
+                Select Item Type
+              </option>
+              <option>Consimable Goods</option>
+              <option>Stationay Items</option>
+              <option>Current Asset</option>
+              <option>Fixed Asset</option>
+              <option>Electrical Items</option>
+              <option>Electronics Items</option>
+              <option>Machineries Items</option>
+              <option>Meterail Items</option>
+              <option>Others</option>
+            </select>
+          </div>
+          <div>
+            <select
+              required
+              onChange={(e) => setselectMode(e.target.value)}
+              className="select select-bordered w-full max-w-sm"
+            >
+              <option disabled selected>
+                Select Mode
+              </option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
         </div>
         <div className="mt-5">
           <button type="submit" className="btn btn-success text-white">
@@ -151,33 +156,39 @@ const ItemAdd = () => {
             </tr>
           </thead>
           <tbody>
-            {itemData.length===0?<td colspan={8} className="py-12 text-center">Data not Found</td>:itemData.map((item, index) => (
-              <tr key={item._id}>
-                <th>{index + 1}</th>
-                <td>{item.itemName}</td>
-                <td>{item.itemType}</td>
-                <td>{item.itemMode}</td>
-                <td className="flex justify-center gap-2">
-                  <button
-                    onClick={() =>
-                      document.getElementById("my_modal_3").showModal()
-                    }
-                    className="bg-blue-700 p-2"
-                  >
-                    <FaEdit
-                      onClick={() => itemUpdateModal(item._id)}
-                      className="text-white text-lg"
-                    />
-                  </button>
-                  <button className="bg-red-700 p-2">
-                    <MdDelete
-                      onClick={() => itemDelHandler(item._id, item.itemName)}
-                      className="text-white text-lg"
-                    />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {itemData.length === 0 ? (
+              <td colspan={8} className="py-12 text-center">
+                Data not Found
+              </td>
+            ) : (
+              itemData.map((item, index) => (
+                <tr key={item._id}>
+                  <th>{index + 1}</th>
+                  <td>{item.itemName}</td>
+                  <td>{item.itemType}</td>
+                  <td>{item.itemMode}</td>
+                  <td className="flex justify-center gap-2">
+                    <button
+                      onClick={() =>
+                        document.getElementById("my_modal_3").showModal()
+                      }
+                      className="bg-blue-700 p-2"
+                    >
+                      <FaEdit
+                        onClick={() => itemUpdateModal(item._id)}
+                        className="text-white text-lg"
+                      />
+                    </button>
+                    <button className="bg-red-700 p-2">
+                      <MdDelete
+                        onClick={() => itemDelHandler(item._id, item.itemName)}
+                        className="text-white text-lg"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

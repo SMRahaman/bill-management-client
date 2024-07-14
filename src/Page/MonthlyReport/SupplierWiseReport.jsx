@@ -15,7 +15,8 @@ const SupplierWiseReport = () => {
   const searcBill = (e) => {
     e.preventDefault();
     const supplierWiseFilterData = dueBillData.filter(
-      (bill) => bill.supplierName === reportType
+      (bill) =>
+        bill.supplierName === reportType && bill.userEmail === user?.email
     );
     console.log(supplierWiseFilterData);
     if (supplierWiseFilterData.length > 0) {
@@ -56,11 +57,12 @@ const SupplierWiseReport = () => {
           </button>
         </div>
       </form>
-      {
-      filterReport.length>0 && (
-        <DataTable filterReport={filterReport} reportType={reportType}></DataTable>   
-      )
-     }
+      {filterReport.length > 0 && (
+        <DataTable
+          filterReport={filterReport}
+          reportType={reportType}
+        ></DataTable>
+      )}
     </div>
   );
 };

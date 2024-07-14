@@ -6,9 +6,11 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import CategoryUpdateModal from "../../Components/CategoryUpdateModal/CategoryUpdateModal";
 import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 
 const CategoryAdd = () => {
-  const {user}=useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const [updateCategory, setUpadateCategory] = useState();
   const [selectCategory, setselectCategory] = useState("");
   const [categoryData, refetch] = useCategoryHook();
@@ -21,10 +23,11 @@ const CategoryAdd = () => {
     const category = {
       categoryName: categoryName,
       categoryMode: categoryMode,
-      userEmail:user?.email,
+      userEmail: user?.email,
     };
     const existingCategory = categoryData.find(
-      (category) => category.categoryName.toLowerCase() === categoryName.toLowerCase()
+      (category) =>
+        category.categoryName.toLowerCase() === categoryName.toLowerCase()
     );
     if (existingCategory) {
       Swal.fire({
@@ -33,17 +36,19 @@ const CategoryAdd = () => {
         icon: "error",
       });
     } else {
-      axios.post("https://bill-deposite-server.vercel.app/api/category", category).then((res) => {
-        if (res.data.insertedId) {
-          Swal.fire({
-            title: "Congratulation",
-            text: `${categoryName} add successfully`,
-            icon: "success",
-          });
-          refetch();
-          form.reset();
-        }
-      });
+      axiosPublic
+        .post("https://bill-manage-server.vercel.app/api/category", category)
+        .then((res) => {
+          if (res.data.insertedId) {
+            Swal.fire({
+              title: "Congratulation",
+              text: `${categoryName} add successfully`,
+              icon: "success",
+            });
+            refetch();
+            form.reset();
+          }
+        });
     }
   };
 
@@ -58,16 +63,18 @@ const CategoryAdd = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`https://bill-deposite-server.vercel.app/api/category/${id}`).then((res) => {
-          if (res.data.deletedCount == 1) {
-            Swal.fire({
-              title: "Congratulation",
-              text: ` ${categoryName}Delete successfully`,
-              icon: "success",
-            });
-            refetch();
-          }
-        });
+        axios
+          .delete(`https://bill-manage-server.vercel.app/api/category/${id}`)
+          .then((res) => {
+            if (res.data.deletedCount == 1) {
+              Swal.fire({
+                title: "Congratulation",
+                text: ` ${categoryName}Delete successfully`,
+                icon: "success",
+              });
+              refetch();
+            }
+          });
       }
     });
   };
@@ -79,7 +86,9 @@ const CategoryAdd = () => {
     setUpadateCategory(findDataForUpdate);
   };
 
-  const userWiseCategory=categoryData.filter(cat=>cat.userEmail===user?.email);
+  const userWiseCategory = categoryData.filter(
+    (cat) => cat.userEmail === user?.email
+  );
 
   return (
     <div className="pt-20 ">
@@ -89,30 +98,30 @@ const CategoryAdd = () => {
             Add Comapny (Voucher type wise)
           </h3>
         </div>
-          <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <div>
-          <input
-            required
-            type="text"
-            name="catName"
-            placeholder="Type Company Name"
-            className="input input-bordered w-full max-w-sm"
-          />
-        </div>
-        <div className="">
-          <select
-            required
-            onChange={(e) => setselectCategory(e.target.value)}
-            className="select select-bordered w-full max-w-sm"
-          >
-            <option disabled selected>
-              Select Category Mode
-            </option>
-            <option>Active</option>
-            <option>Inactive</option>
-          </select>
-        </div>
+            <input
+              required
+              type="text"
+              name="catName"
+              placeholder="Type Company Name"
+              className="input input-bordered w-full max-w-sm"
+            />
           </div>
+          <div className="">
+            <select
+              required
+              onChange={(e) => setselectCategory(e.target.value)}
+              className="select select-bordered w-full max-w-sm"
+            >
+              <option disabled selected>
+                Select Category Mode
+              </option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+        </div>
         <div className="mt-5">
           <button type="submit" className="btn btn-success text-white">
             Add Category
@@ -135,34 +144,40 @@ const CategoryAdd = () => {
             </tr>
           </thead>
           <tbody>
-            {userWiseCategory.length===0?<td colspan={8} className="py-12 text-center">Data not Found</td>:userWiseCategory.map((category, index) => (
-              <tr key={category._id}>
-                <th>{index + 1}</th>
-                <td>{category.categoryName}</td>
-                <td>{category.categoryMode}</td>
-                <td className="flex justify-center gap-2">
-                  <button
-                    onClick={() =>
-                      document.getElementById("my_modal_3").showModal()
-                    }
-                    className="bg-blue-700 p-2"
-                  >
-                    <FaEdit
-                      onClick={() => catUpdateModal(category._id)}
-                      className="text-white text-lg"
-                    />
-                  </button>
-                  <button className="bg-red-700 p-2">
-                    <MdDelete
+            {userWiseCategory.length === 0 ? (
+              <td colspan={8} className="py-12 text-center">
+                Data not Found
+              </td>
+            ) : (
+              userWiseCategory.map((category, index) => (
+                <tr key={category._id}>
+                  <th>{index + 1}</th>
+                  <td>{category.categoryName}</td>
+                  <td>{category.categoryMode}</td>
+                  <td className="flex justify-center gap-2">
+                    <button
                       onClick={() =>
-                        catDelHandler(category._id, category.categoryName)
+                        document.getElementById("my_modal_3").showModal()
                       }
-                      className="text-white text-lg"
-                    />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                      className="bg-blue-700 p-2"
+                    >
+                      <FaEdit
+                        onClick={() => catUpdateModal(category._id)}
+                        className="text-white text-lg"
+                      />
+                    </button>
+                    <button className="bg-red-700 p-2">
+                      <MdDelete
+                        onClick={() =>
+                          catDelHandler(category._id, category.categoryName)
+                        }
+                        className="text-white text-lg"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

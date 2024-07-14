@@ -1,39 +1,41 @@
 import React, { useContext, useEffect, useState } from "react";
-import useDueBillHook from "../../Hook/DueBillHook/useDueBillHook";;
+import useDueBillHook from "../../Hook/DueBillHook/useDueBillHook";
 import axios from "axios";
 import DataTable from "../DataTable/DataTable";
 import useCategoryHook from "../../Hook/CategoryHook/useCategoryHook";
+import userUserHook from "../../Hook/UserHook/userUserHook";
+import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 const MonthlyReportByBillStatus = () => {
+  const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const [catData] = useCategoryHook();
   const [selectStartDate, setSeletStartDate] = useState("");
   const [selectEndDate, setSelectEndDate] = useState("");
   const [reportType, setSelectReportType] = useState("");
-  const[company,setSelectCompany]=useState('')
+  const [company, setSelectCompany] = useState("");
   const [filterReport, setFilterReport] = useState([]);
-  const [ ,refetch]=useDueBillHook();
+  const [, refetch] = useDueBillHook();
   const searcBill = (e) => {
     e.preventDefault();
     console.log(selectStartDate, selectEndDate, reportType);
-    axios
+    axiosPublic
       .get(
-        `https://bill-deposite-server.vercel.app/api/monthly-report-billStatus?fromDate=${selectStartDate}&toDate=${selectEndDate}&report=${reportType}&company=${company}`
+        `api/monthly-report-billStatus?fromDate=${selectStartDate}&toDate=${selectEndDate}&report=${reportType}&company=${company}&email=${user?.email}`
       )
       .then((res) => {
         console.log(res.data);
-        if(res.data.length==0){
-          alert('No Bill Found')
-        }
-        else{
+        if (res.data.length == 0) {
+          alert("Data not found");
+        } else {
           setFilterReport(res.data);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-      
   };
 
- 
   return (
     <div className="mt-20">
       <h3 className="font-bold text-2xl">Bill Status Wise Report</h3>
@@ -87,21 +89,30 @@ const MonthlyReportByBillStatus = () => {
               <option>Paid by bank</option>
             </select>
           </div>
+          {/* <div className="flex flex-col gap-2">
+            <span className="text-xs">User</span>
+            <input
+              className=" input input-bordered w-full max-w-xs"
+              defaultValue={user?.email}
+              type="text"
+            />
+          </div> */}
         </div>
         <div className="mt-12 text-center">
           <button
-           onClick={searcBill}
+            onClick={searcBill}
             className="bg-green-700 rounded text-white  w-[50%] h-[40px]"
           >
             Search Bill
           </button>
         </div>
       </form>
-      {
-      filterReport.length>0 && (
-        <DataTable filterReport={filterReport} reportType={reportType}></DataTable>   
-      )
-     }
+      {filterReport.length > 0 && (
+        <DataTable
+          filterReport={filterReport}
+          reportType={reportType}
+        ></DataTable>
+      )}
     </div>
   );
 };

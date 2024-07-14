@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import useItemHook from "../../Hook/ItemHook/useItemHook";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 
 const ItemUpdateModal = ({ updateItem }) => {
+  const axiosPublic = useAxiosPublic();
   const [updateItemType, setUpdateItemType] = useState(updateItem?.itemType);
   const [updateItemMode, setUpdateItemMode] = useState(updateItem?.itemMode);
   console.log(updateItemMode, updateItemType);
@@ -20,20 +22,18 @@ const ItemUpdateModal = ({ updateItem }) => {
       itemMode: updateitemmode,
     };
 
-    axios
-      .put(`https://bill-deposite-server.vercel.app/api/item/${updateItem._id}`, item)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.modifiedCount > 0) {
-          Swal.fire({
-            title: "Congratulation",
-            text: `Update successfully`,
-            icon: "success",
-          });
-          refetch();
-          form.reset();
-        }
-      });
+    axiosPublic.put(`api/item/${updateItem._id}`, item).then((res) => {
+      console.log(res.data);
+      if (res.data.modifiedCount > 0) {
+        Swal.fire({
+          title: "Congratulation",
+          text: `Update successfully`,
+          icon: "success",
+        });
+        refetch();
+        form.reset();
+      }
+    });
   };
 
   return (

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import useCategoryHook from "../../Hook/CategoryHook/useCategoryHook";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
+
 
 const CategoryUpdateModal = ({ updateCategory }) => {
+  const axiosPublic = useAxiosPublic();
   console.log(updateCategory);
   // const{_id,categoryMode,categoryName}=updateCategory
   const [updateCatMode, setCatUpdateMode] = useState(
@@ -18,11 +21,8 @@ const CategoryUpdateModal = ({ updateCategory }) => {
     const categoryMode = updateCatMode;
     const category = { categoryName: categoryName, categoryMode: categoryMode };
 
-    axios
-      .put(
-        `https://bill-deposite-server.vercel.app/api/category/${updateCategory?._id}`,
-        category
-      )
+    axiosPublic
+      .put(`api/category/${updateCategory?._id}`, category)
       .then((res) => {
         console.log(res.data);
         if (res.data.modifiedCount > 0) {

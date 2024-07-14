@@ -4,7 +4,9 @@ import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
 import { updateProfile } from "firebase/auth";
 import Swal from "sweetalert2";
 import axios from "axios";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 const Registration = () => {
+  const axiosPublic = useAxiosPublic();
   const { register } = useContext(AuthContext);
   const registerHandler = (e) => {
     e.preventDefault();
@@ -22,8 +24,8 @@ const Registration = () => {
             displayName: name,
             photoURL: photoURL,
           });
-          axios
-            .post("https://bill-deposite-server.vercel.app/api/user", {
+          axiosPublic
+            .post("api/user", {
               userEmail: email,
               userName: name,
             })

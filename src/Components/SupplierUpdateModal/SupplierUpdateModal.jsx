@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 import useSupplierHook from "../../Hook/SupplierHook/useSupplierHook";
 
 const supplierUpdateModal = ({ updateSupplier }) => {
+  const axiosPublic = useAxiosPublic();
   const [updateCreaditDuration, setUpdateCreaditDuration] = useState(
     updateSupplier?.creaditDuration
   );
@@ -24,11 +26,8 @@ const supplierUpdateModal = ({ updateSupplier }) => {
       creaditDuration: creaditDuration,
       supplierMode: supplierMode,
     };
-    axios
-      .put(
-        `https://bill-deposite-server.vercel.app/api/supplierInfo/${updateSupplier?._id}`,
-        supplierInfo
-      )
+    axiosPublic
+      .put(`api/supplierInfo/${updateSupplier?._id}`, supplierInfo)
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           Swal.fire({

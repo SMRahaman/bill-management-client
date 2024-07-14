@@ -3,7 +3,6 @@ import Header from "../Common/Header/Header";
 import SideMenubar from "../Common/SideMenubar/SideMenubar";
 import { Outlet, useLocation } from "react-router-dom";
 import { AuthContext } from "../Components/AuthProvider/AuthProvider";
-import axios from "axios";
 import userUserHook from "../Hook/UserHook/userUserHook";
 
 const Main = () => {
@@ -16,22 +15,22 @@ const Main = () => {
   console.log(specifiqUserForRole);
   return (
     <div className="z-10">
-      {location.pathname !== "/" && (
+      {location.pathname !== "/login" && (
         <div className="z-[10] fixed w-full">
           <Header userRole={specifiqUserForRole}></Header>
         </div>
       )}
       <div className="flex flex-row relative">
-        {location.pathname !== "/" && (
+        {location.pathname !== "/login" && (
           <div className="w-[20%] overflow-auto">
             <SideMenubar userRole={specifiqUserForRole}></SideMenubar>
           </div>
         )}
         <div
           className={
-            location.pathname !== "/"
-              ? "w-[80%] absolute left-[260px] pe-5"
-              : "w-full "
+            location.pathname == "/"
+              ? "w-full"
+              : "w-[80%] absolute left-[260px] pe-5"
           }
         >
           <Outlet userRole={specifiqUserForRole}></Outlet>

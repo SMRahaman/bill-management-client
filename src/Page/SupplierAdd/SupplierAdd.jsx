@@ -9,12 +9,14 @@ import Swal from "sweetalert2";
 import SupplierUpdateModal from "../../Components/SupplierUpdateModal/SupplierUpdateModal";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 const SupplierAdd = () => {
-  const {user}=useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
+  const { user } = useContext(AuthContext);
   const [updateSupplier, setUpdateSupplier] = useState();
   const [selectCreaditDuration, setSelectCreaditDuration] = useState();
   const [selectMode, setSelectMode] = useState("");
-  const[search,setSearch]=useState('');
+  const [search, setSearch] = useState("");
   const [supplierData, refetch] = useSupplierHook();
   console.log(supplierData);
   const supplierAddHandler = (e) => {
@@ -31,7 +33,7 @@ const SupplierAdd = () => {
       supplierAddress: supplierAddress,
       creaditDuration: creaditDuration,
       supplierMode: supplierMode,
-      userEmail:user?.email,
+      userEmail: user?.email,
     };
     const existingSupplier = supplierData.find(
       (supplier) => supplier.supplierName === supplierName
@@ -44,19 +46,17 @@ const SupplierAdd = () => {
       });
       form.reset();
     } else {
-      axios
-        .post("https://bill-deposite-server.vercel.app/api/supplierInfo", supplierInfo)
-        .then((res) => {
-          if (res.data.insertedId) {
-            Swal.fire({
-              title: "Congratulation",
-              text: `${supplierName} add successfully`,
-              icon: "success",
-            });
-            refetch();
-            form.reset();
-          }
-        });
+      axiosPublic.post("api/supplierInfo", supplierInfo).then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Congratulation",
+            text: `${supplierName} add successfully`,
+            icon: "success",
+          });
+          refetch();
+          form.reset();
+        }
+      });
     }
   };
 
@@ -71,23 +71,23 @@ const SupplierAdd = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios
-          .delete(`https://bill-deposite-server.vercel.app/api/supplierInfo/${id}`)
-          .then((res) => {
-            if (res.data.deletedCount == 1) {
-              Swal.fire({
-                title: "Congratulation",
-                text: ` ${supplierName}Delete successfully`,
-                icon: "success",
-              });
-              refetch();
-            }
-          });
+        axiosPublic.delete(`api/supplierInfo/${id}`).then((res) => {
+          if (res.data.deletedCount == 1) {
+            Swal.fire({
+              title: "Congratulation",
+              text: ` ${supplierName}Delete successfully`,
+              icon: "success",
+            });
+            refetch();
+          }
+        });
       }
     });
   };
 
-  const userwiseSupplier=supplierData.filter(supplier=>supplier.userEmail===user?.email)
+  const userwiseSupplier = supplierData.filter(
+    (supplier) => supplier.userEmail === user?.email
+  );
 
   const supplierUpdateModal = (id) => {
     const findDataForUpdate = supplierData.find(
@@ -96,7 +96,11 @@ const SupplierAdd = () => {
     setUpdateSupplier(findDataForUpdate);
   };
 
-  const filterSupplier=userwiseSupplier.filter(supplier=>supplier.supplierName.toLowerCase().includes(search.toLowerCase())||supplier.supplierPhoneNumber.toLowerCase().includes(search.toLowerCase()))
+  const filterSupplier = userwiseSupplier.filter(
+    (supplier) =>
+      supplier.supplierName.toLowerCase().includes(search.toLowerCase()) ||
+      supplier.supplierPhoneNumber.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="py-20 ">
@@ -141,7 +145,7 @@ const SupplierAdd = () => {
             <option>30</option>
             <option>60</option>
             <option>90</option>
-            <option>0</option>        
+            <option>0</option>
           </select>
           <select
             required
@@ -168,7 +172,7 @@ const SupplierAdd = () => {
         <div className="text-right my-5">
           <input
             type="text"
-            onChange={e=>setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-72 p-2 h-10 rounded-lg border-2 border-red-700 text-xs"
             placeholder="Seach by phone number or Supplier name"
           />
@@ -188,49 +192,58 @@ const SupplierAdd = () => {
             </tr>
           </thead>
           <tbody>
-            {filterSupplier.length===0?<td colspan={8} className="py-12 text-center" >Data not Found</td>:filterSupplier?.map((supplier, index) => (
-              <tr key={supplier._id}>
-                <th>{index + 1}</th>
-                <td>{supplier.supplierName}</td>
-                <td>{supplier.supplierPhoneNumber}</td>
-                <td>{supplier.supplierAddress}</td>
-                <td>{supplier.creaditDuration} Days</td>
-                <td>{supplier.supplierMode}</td>
-                <td className="flex justify-center gap-2">
-                  <Link
-                    to={`/due-bill-add/${supplier._id}`}
-                    className="bg-green-700 p-2"
-                  >
-                    <AiTwotoneFileAdd className="text-white text-sm" />
-                  </Link>
-                  <Link
-                    to={`/due-bill-view/${supplier._id}`}
-                    className="bg-red-700 p-2"
-                  >
-                    <FaEye className="text-white text-sm" />
-                  </Link>
-                <button
-                    onClick={() =>
-                      document.getElementById("my_modal_3").showModal()
-                    }
-                    className="bg-blue-700 p-2"
-                  >
-                    <FaEdit
-                      onClick={() => supplierUpdateModal(supplier._id)}
-                      className="text-white text-sm"
-                    />
-                  </button>
-                  <button className="bg-red-700 p-2">
-                    <MdDelete
+            {filterSupplier.length === 0 ? (
+              <td colspan={8} className="py-12 text-center">
+                Data not Found
+              </td>
+            ) : (
+              filterSupplier?.map((supplier, index) => (
+                <tr key={supplier._id}>
+                  <th>{index + 1}</th>
+                  <td>{supplier.supplierName}</td>
+                  <td>{supplier.supplierPhoneNumber}</td>
+                  <td>{supplier.supplierAddress}</td>
+                  <td>{supplier.creaditDuration} Days</td>
+                  <td>{supplier.supplierMode}</td>
+                  <td className="flex justify-center gap-2">
+                    <Link
+                      to={`/due-bill-add/${supplier._id}`}
+                      className="bg-green-700 p-2"
+                    >
+                      <AiTwotoneFileAdd className="text-white text-sm" />
+                    </Link>
+                    <Link
+                      to={`/due-bill-view/${supplier._id}`}
+                      className="bg-red-700 p-2"
+                    >
+                      <FaEye className="text-white text-sm" />
+                    </Link>
+                    <button
                       onClick={() =>
-                        supplierDelHandler(supplier._id, supplier.supplierName)
+                        document.getElementById("my_modal_3").showModal()
                       }
-                      className="text-white text-sm"
-                    />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                      className="bg-blue-700 p-2"
+                    >
+                      <FaEdit
+                        onClick={() => supplierUpdateModal(supplier._id)}
+                        className="text-white text-sm"
+                      />
+                    </button>
+                    <button className="bg-red-700 p-2">
+                      <MdDelete
+                        onClick={() =>
+                          supplierDelHandler(
+                            supplier._id,
+                            supplier.supplierName
+                          )
+                        }
+                        className="text-white text-sm"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

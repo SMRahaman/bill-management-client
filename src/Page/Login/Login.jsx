@@ -14,7 +14,7 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         if (user) {
-          navigate("/dashboard");
+          navigate("/");
         }
       })
       .catch((error) => alert("Username or Password does not match"));

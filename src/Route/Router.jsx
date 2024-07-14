@@ -26,7 +26,11 @@ export const router = createBrowserRouter([
 
     children: [
       {
-        path: "/dashboard",
+        path: "/login",
+        element: <Login></Login>,
+      },
+      {
+        path: "/",
         element: (
           <PrivateRoute>
             <Dashboard></Dashboard>
@@ -66,7 +70,7 @@ export const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(
-            `https://bill-deposite-server.vercel.app/api/supplierInfo/${params.id}`
+            `https://bill-manage-server.vercel.app/api/supplierInfo/${params.id}`
           ),
       },
       {
@@ -78,7 +82,7 @@ export const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(
-            `https://bill-deposite-server.vercel.app/api/supplierInfo/${params.id}`
+            `https://bill-manage-server.vercel.app/api/supplierInfo/${params.id}`
           ),
       },
       {
@@ -90,7 +94,7 @@ export const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(
-            `https://bill-deposite-server.vercel.app/api/due-bill/${params.id}`
+            `https://bill-manage-server.vercel.app/api/due-bill/${params.id}`
           ),
       },
 
@@ -166,10 +170,6 @@ export const router = createBrowserRouter([
             <User></User>
           </PrivateRoute>
         ),
-      },
-      {
-        path: "/",
-        element: <Login></Login>,
       },
 
       {

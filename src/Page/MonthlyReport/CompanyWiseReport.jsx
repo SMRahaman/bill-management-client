@@ -2,16 +2,21 @@ import React, { useContext, useEffect, useState } from "react";
 import useDueBillHook from "../../Hook/DueBillHook/useDueBillHook";
 import useCategoryHook from "../../Hook/CategoryHook/useCategoryHook";
 import DataTable from "../DataTable/DataTable";
+import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
 const CompanyWiseReport = () => {
+  const { user } = useContext(AuthContext);
   const [catData] = useCategoryHook();
   const [dueBillData] = useDueBillHook();
   const [reportType, setSelectReportType] = useState("");
   const [filterReport, setFilterReport] = useState([]);
   const searcBill = (e) => {
     e.preventDefault();
-    const comapnyWiseFilterData = dueBillData.filter((bill) =>
-    bill.coampanyVoucher.toLowerCase().includes(reportType.toLowerCase()))
-    if (comapnyWiseFilterData.length>0) {
+    const comapnyWiseFilterData = dueBillData.filter(
+      (bill) =>
+        bill.userEmail === user?.email &&
+        bill.coampanyVoucher.toLowerCase() === reportType.toLowerCase()
+    );
+    if (comapnyWiseFilterData.length > 0) {
       setFilterReport(comapnyWiseFilterData);
     } else {
       alert("Data not found");
@@ -48,13 +53,11 @@ const CompanyWiseReport = () => {
             Search Bill
           </button>
         </div>
-      </form> 
-     {
-      filterReport.length>0 && (
-        <DataTable filterReport={filterReport}></DataTable>   
-      )
-     }
-      </div>
+      </form>
+      {filterReport.length > 0 && (
+        <DataTable filterReport={filterReport}></DataTable>
+      )}
+    </div>
   );
 };
 

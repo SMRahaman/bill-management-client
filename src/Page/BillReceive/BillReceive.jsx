@@ -8,7 +8,9 @@ import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
 import Swal from "sweetalert2";
 import useCategoryHook from "../../Hook/CategoryHook/useCategoryHook";
 import moment from "moment";
+import useAxiosPublic from "../../Hook/useAxiosPublic";
 const BillReceive = () => {
+  const axiosPublic = useAxiosPublic();
   const { user } = useContext(AuthContext);
   const [selectUser, setSelectUser] = useState("");
   const [selectDate, setSeletDate] = useState("");
@@ -26,17 +28,18 @@ const BillReceive = () => {
         (bill.userName === selectUser &&
           bill.billsubmiteDate === selectDate &&
           bill.billStatus === "Pending") ||
-        (bill.coampanyVoucher === selectVoucher) && 
+        (bill.coampanyVoucher === selectVoucher &&
           bill.billStatus === "Pending")
+    );
 
     setFilterDuesBill(filterDueBill);
   };
   const dueBillReceive = (id) => {
     console.log(id);
-    axios
-      .patch(`https://bill-deposite-server.vercel.app/api/due-bill/${id}`, {
+    axiosPublic
+      .patch(`api/due-bill/${id}`, {
         billStatus: "Received",
-        billReceiveDate:billReceiveDate,
+        billReceiveDate: billReceiveDate,
       })
       .then((res) => {
         console.log(res.data);
@@ -48,7 +51,6 @@ const BillReceive = () => {
           });
           refetch();
         }
-       
       });
   };
   return (
@@ -168,18 +170,19 @@ const BillReceive = () => {
                             <TbListDetails className="text-white text-sm" />
                           </button>
                         </Link>
-                      
-                      {
-                        bill.billStatus==='Pending'? <button
-                        onClick={() => dueBillReceive(bill._id)}
-                        className="bg-green-800 text-white p-1 rounded" >
-                        Receive
-                      </button>:
-                       <button
-                       className="bg-red-800 text-white p-1 rounded" >
-                       Received
-                     </button>
-                      }
+
+                        {bill.billStatus === "Pending" ? (
+                          <button
+                            onClick={() => dueBillReceive(bill._id)}
+                            className="bg-green-800 text-white p-1 rounded"
+                          >
+                            Receive
+                          </button>
+                        ) : (
+                          <button className="bg-red-800 text-white p-1 rounded">
+                            Received
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
