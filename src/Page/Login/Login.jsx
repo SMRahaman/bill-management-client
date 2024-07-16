@@ -14,20 +14,15 @@ const Login = () => {
       .then((result) => {
         const user = result.user;
         if (user) {
-          navigate("/");
+          navigate("/dashboard");
         }
       })
       .catch((error) => alert("Username or Password does not match"));
     form.reset();
   };
   return (
-    <div className="min-h-screen bg-base-200">
-      <div>
-        <h3 className="text-3xl text-center py-12 font-bold uppercase">
-          WelCome to Bill Managment System
-        </h3>
-      </div>
-      <div className=" hero ">
+    <div className="hero min-h-screen bg-base-200">
+      <div className="hero">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="card shrink-0 w-[400px] max-w-sm shadow-2xl bg-base-100">
             <form onSubmit={loginHandler} className="card-body">

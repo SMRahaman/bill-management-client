@@ -19,18 +19,18 @@ import Paidbill from "../Page/Paybill/Paidbill";
 import Paybill from "../Page/Paybill/Paybill";
 import BillReceive from "../Page/BillReceive/BillReceive";
 import BillReceived from "../Page/BillReceive/BillReceived";
+import Home from "../Page/Home/Home";
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
-
     children: [
       {
-        path: "/login",
-        element: <Login></Login>,
+        path: "/",
+        element: <Home></Home>,
       },
       {
-        path: "/",
+        path: "/dashboard",
         element: (
           <PrivateRoute>
             <Dashboard></Dashboard>
@@ -170,6 +170,10 @@ export const router = createBrowserRouter([
             <User></User>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/login",
+        element: <Login></Login>,
       },
 
       {

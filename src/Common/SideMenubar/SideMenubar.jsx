@@ -1,27 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaHome } from "react-icons/fa";
-import { BiSolidCategory } from "react-icons/bi";
-import { MdProductionQuantityLimits, MdPaid } from "react-icons/md";
-import { TbReportSearch } from "react-icons/tb";
-import { FaUser } from "react-icons/fa";
-import { GiShop } from "react-icons/gi";
 import { AuthContext } from "../../Components/AuthProvider/AuthProvider";
-const SideMenubar = ({ userRole }) => {
+
+import userUserHook from "../../Hook/UserHook/userUserHook";
+const SideMenubar = () => {
   const { user } = useContext(AuthContext);
+  const [userData] = userUserHook();
+  const userRole = userData?.find((users) => users.userEmail === user.email);
+  console.log(userRole);
   return (
     <div>
       <div className="flex h-screen flex-col justify-between w-[240px] overflow-y-auto bg-[#301934] fixed">
         <div className=" py-4 px-4 mt-12">
           <ul className="mt-6 space-y-1">
-            <li>
-              <Link
-                to="/dashboard"
-                className="block rounded-lg hover:bg-gray-100 px-4 py-2 text-sm font-medium text-gray-500"
-              >
-                Home
-              </Link>
-            </li>
+            {(userRole?.role === "Logistic-User" ||
+              "Account-User" ||
+              "SuperAdmin") && (
+              <li>
+                <Link
+                  to="/dashboard"
+                  className="block rounded-lg hover:bg-gray-100 px-4 py-2 text-sm font-medium text-gray-500"
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
 
             {userRole?.role === "Logistic-User" && (
               <li>
